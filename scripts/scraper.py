@@ -10,7 +10,8 @@ import requests
 from bs4 import BeautifulSoup
 import telegram
 # import telegram_info as ti # django_extensions 설치하기 전
-from . import telegram_info as ti # django_extensions 설치하기 후
+# from . import telegram_info as ti # django_extensions 설치하기 후
+import env_info as ti
 
 TLGM_BOT_TOKEN = ti.TLGM_BOT_TOKEN
 tlgm_bot = telegram.Bot(token=TLGM_BOT_TOKEN)
@@ -58,15 +59,16 @@ def run():
             if up_count >= 3:
                 # print(img_url, title, link, reply_count, up_count)
 
-                # 텔레그램 봇으로 push sendMessage(chat_id, 전송 메시지)
-                chat_id = ti.chat_id
-                message = link
-                tlgm_bot.sendMessage(chat_id, message)
-
                 # hotdeal 앱의 Deal 클래스를 통해 DB 테이블에 데이터 저장
                 # link와 대소문자를 구분하지 않고 정확히 같은 데이터 찾기 -> '__iexact' 속성
                 # DB에 저장된 link가 없다면
-                if(Deal.objects.filter(link__iexact=link).count() == 0):
+                db_link_cnt = Deal.objects.filter(link__iexact=link).count()
+                if(db_link_cnt == 0): # 중복이 없는 것만 출력하고 저장하기
+                    # 텔레그램 봇으로 push sendMessage(chat_id, 전송 메시지)
+                    chat_id = ti.chat_id
+                    message = link
+                    tlgm_bot.sendMessage(chat_id, message)
+
                     Deal(img_url=img_url, title=title, link=link, reply_count=reply_count, up_count=up_count).save()
 
         except Exception as e:
