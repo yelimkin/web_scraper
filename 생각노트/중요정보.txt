@@ -1,0 +1,9 @@
+텔레그램 HTTP APi
+5709750214:AAEAlOFrAtehuiWsuPL3fqXowKwHV6fXZlU
+
+브라우저에 붙여넣기
+https://api.telegram.org/bot5709750214:AAEAlOFrAtehuiWsuPL3fqXowKwHV6fXZlU/getUpdates
+
+chat id : 5862497607
+
+git repository : git@github.com:yelimkin/web_scraper.git
