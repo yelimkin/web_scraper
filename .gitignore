@@ -132,3 +132,4 @@ dmypy.json
 생각노트/
 my_setting.py
 telegram_info.py
+env_info.py
