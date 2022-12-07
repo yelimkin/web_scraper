@@ -12,6 +12,12 @@ import telegram
 # import telegram_info as ti # django_extensions 설치하기 전
 # from . import telegram_info as ti # django_extensions 설치하기 후
 import env_info as ti
+from datetime import datetime, timedelta
+
+# DB 데이블 데이터 유지 기간 설정 변수
+during_date = 3
+# 추천 수 기준 지정
+up_cnt_limit = 3
 
 TLGM_BOT_TOKEN = ti.TLGM_BOT_TOKEN
 tlgm_bot = telegram.Bot(token=TLGM_BOT_TOKEN)
@@ -31,6 +37,12 @@ items = soup.select("tr.list1, tr.list0")
 
 # img_url, title, link, reply_count, up_count
 def run():
+    # 최근 3일 데이터만 DB에 저장하고 유지
+    # 삭제한 데이터 개수 -> row
+    # row, _ = Deal.objects.filter(cdate__lte = datetime.now() - timedelta(days=3)).delete()
+    row, _ = Deal.objects.filter(cdate__lte = datetime.now() - timedelta(minutes=during_date)).delete()
+    print(row, "deals deleted")
+    
     for item in items:
         try:
             img_url = item.select("img.thumb_border")[0].get("src").strip()
@@ -56,7 +68,7 @@ def run():
             up_count = int(up_count)
             # print(up_count)
 
-            if up_count >= 3:
+            if up_count >= up_cnt_limit:
                 # print(img_url, title, link, reply_count, up_count)
 
                 # hotdeal 앱의 Deal 클래스를 통해 DB 테이블에 데이터 저장
